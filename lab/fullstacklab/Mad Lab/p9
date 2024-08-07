@@ -1,0 +1,45 @@
+package com.example.sms;
+import androidx.appcompat.app.AppCompatActivity;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.view.View;
+
+import android.widget.EditText;
+import android.widget.Toast;
+public class MainActivity extends AppCompatActivity {
+private static final int SMS_PERMISSION_REQUEST_CODE = 1001;
+private EditTextetPhoneNumber;
+private EditTextetMessage;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+etPhoneNumber = findViewById(R.id.et_phone_number);
+etMessage = findViewById(R.id.et_message);
+// Check and request SMS permission
+if (checkSelfPermission(Manifest.permission.SEND_SMS) !=
+PackageManager.PERMISSION_GRANTED) {
+requestPermissions(new String[]{Manifest.permission.SEND_SMS},
+SMS_PERMISSION_REQUEST_CODE);
+}
+}
+public void sendMessage(View view) {
+String phoneNumber = etPhoneNumber.getText().toString();
+String message = etMessage.getText().toString();
+if (phoneNumber.isEmpty() || message.isEmpty()) {
+Toast.makeText(this, "Please enter phone number and message",
+Toast.LENGTH_SHORT).show();
+return;
+}
+if (checkSelfPermission(Manifest.permission.SEND_SMS) ==
+PackageManager.PERMISSION_GRANTED) {
+SmsManagersmsManager = SmsManager.getDefault();
+smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+Toast.makeText(this, "SMS sent", Toast.LENGTH_SHORT).show();
+} else {
+Toast.makeText(this, "SMS permission not granted", Toast.LENGTH_SHORT).show();
+}
+}
+}
