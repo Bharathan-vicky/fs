@@ -1,0 +1,76 @@
+package com.example.gps;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+public class MainActivity extends AppCompatActivity implements LocationListener {
+private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+private LocationManager locationManager;
+43
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+// Check and request location permission
+if (ContextCompat.checkSelfPermission(this,
+Manifest.permission.ACCESS_FINE_LOCATION)
+!=PackageManager.PERMISSION_GRANTED) {
+ActivityCompat.requestPermissions(this,
+new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+LOCATION_PERMISSION_REQUEST_CODE);
+} else {
+initLocation();
+}
+// Perform internet-related tasks here
+// ...
+}
+private void initLocation() {
+// Get the location manager
+locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+// Request location updates
+if (locationManager != null) {
+locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+5000, 10, this);
+}
+}
+@Override
+public void onLocationChanged(Location location) {
+// Handle location updates here
+double latitude = location.getLatitude();
+double longitude = location.getLongitude();
+Toast.makeText(this, "Latitude: " + latitude + ", Longitude: " + longitude,
+Toast.LENGTH_SHORT).show();
+}
+@Override
+public void onProviderEnabled(String provider) {
+// Called when the user enables the location provider
+}
+@Override
+public void onProviderDisabled(String provider) {
+// Called when the user disables the location provider
+}
+44
+@Override
+public void onStatusChanged(String provider, int status, Bundle extras) {
+// Called when the status of the location provider changes
+}
+@Override
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
+grantResults) {
+if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+if (grantResults.length> 0 &&grantResults[0] ==
+PackageManager.PERMISSION_GRANTED) {
+initLocation();
+} else {
+Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+}
+}
+}
+}
